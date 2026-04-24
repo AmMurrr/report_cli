@@ -1,17 +1,26 @@
+[build-system]
+requires = ["setuptools>=40.8.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "report-cli"
 version = "0.1.0"
-description = "CLI tool for generating reports from CSV files"
 requires-python = ">=3.12"
 dependencies = [
     "tabulate==0.10.0",
 ]
+
+[project.scripts]
+report-cli = "report_cli.cli:main"
 
 [project.optional-dependencies]
 dev = [
     "pytest==9.0.3",
     "ruff==0.15.11",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

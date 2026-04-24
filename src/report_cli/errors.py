@@ -1,0 +1,22 @@
+from pathlib import Path
+
+
+class AppError(Exception):
+    pass
+
+
+class DataFileNotFoundError(AppError):
+    def __init__(self, file_path: Path) -> None:
+        super().__init__(f"Файл не найден: {file_path}")
+
+
+class ReportNotFoundError(AppError):
+    def __init__(self, report_name: str, available_reports: list[str]) -> None:
+        if available_reports:
+            available = ", ".join(sorted(available_reports))
+        else:
+            available = "none"
+
+        super().__init__(
+            f"Неизвестный отчёт '{report_name}'. Доступные отчёты: {available}"
+        )
