@@ -10,6 +10,11 @@ class DataFileNotFoundError(AppError):
         super().__init__(f"Файл не найден: {file_path}")
 
 
+class DataFileReadError(AppError):
+    def __init__(self, file_path: Path) -> None:
+        super().__init__(f"Не удалось прочитать файл: {file_path}")
+
+
 class InvalidCsvRowError(AppError):
     def __init__(self, file_path: Path, line_number: int, reason: str) -> None:
         super().__init__(
