@@ -16,6 +16,7 @@ report-cli = "report_cli.cli:main"
 [project.optional-dependencies]
 dev = [
     "pytest==9.0.3",
+    "pytest-cov==7.1.0",
     "ruff==0.15.11",
 ]
 
@@ -25,6 +26,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+addopts = "--cov=report_cli --cov-report=term-missing"
 
 [tool.ruff]
 line-length = 88
