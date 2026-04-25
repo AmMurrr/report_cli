@@ -61,3 +61,27 @@ def test_cli_returns_error_for_unknown_report(capsys, tmp_path: Path) -> None:
 
     assert exit_code == 1
     assert "Неизвестный отчёт 'unknown'" in captured.err
+
+
+def test_cli_returns_error_for_invalid_csv(capsys, tmp_path: Path) -> None:
+    csv_file = tmp_path / "metrics.csv"
+    csv_file.write_text(
+        "title,ctr,retention_rate,views,likes,avg_watch_time\n"
+        "First,25.0,22,not-a-number,8900,2.5\n",
+        encoding="utf-8",
+    )
+
+    exit_code = main(
+        [
+            "--files",
+            str(csv_file),
+            "--report",
+            "clickbait",
+        ]
+    )
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "Некорректная строка CSV" in captured.err
+    assert "числовое поле содержит некорректное значение" in captured.err
