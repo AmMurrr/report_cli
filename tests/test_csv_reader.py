@@ -33,6 +33,9 @@ def test_read_video_metrics_combines_multiple_files(tmp_path: Path) -> None:
     ]
     assert metrics[0].ctr == 18.2
     assert metrics[0].retention_rate == 35
+    assert metrics[0].views == 45200
+    assert metrics[0].likes == 1240
+    assert metrics[0].avg_watch_time == 4.2
 
 
 def test_read_video_metrics_raises_for_missing_file(tmp_path: Path) -> None:

@@ -1,12 +1,30 @@
+from pathlib import Path
+
 from report_cli.cli import main
 
 
-def test_cli_outputs_clickbait_report(capsys) -> None:
+def test_cli_outputs_clickbait_report(capsys, tmp_path: Path) -> None:
+    first_file = tmp_path / "first.csv"
+    second_file = tmp_path / "second.csv"
+
+    first_file.write_text(
+        "title,ctr,retention_rate,views,likes,avg_watch_time\n"
+        "First,25.0,22,254000,8900,2.5\n"
+        "Low ctr,9.5,35,31500,890,8.9\n",
+        encoding="utf-8",
+    )
+    second_file.write_text(
+        "title,ctr,retention_rate,views,likes,avg_watch_time\n"
+        "Second,18.2,35,45200,1240,4.2\n"
+        "High retention,20.0,40,28900,780,7.8\n",
+        encoding="utf-8",
+    )
+
     exit_code = main(
         [
             "--files",
-            "tests/data/stats1.csv",
-            "tests/data/stats2.csv",
+            str(first_file),
+            str(second_file),
             "--report",
             "clickbait",
         ]
@@ -15,20 +33,25 @@ def test_cli_outputs_clickbait_report(capsys) -> None:
     captured = capsys.readouterr()
 
     assert exit_code == 0
-    assert "Секрет который скрывают тимлиды" in captured.out
-    assert "Я бросил IT и стал фермером" in captured.out
-    assert "Почему сеньоры не носят галстуки" not in captured.out
-    assert "Рефакторинг выходного дня" not in captured.out
-    assert captured.out.index("Секрет который скрывают тимлиды") < captured.out.index(
-        "Я бросил IT и стал фермером"
+    assert "First" in captured.out
+    assert "Second" in captured.out
+    assert "Low ctr" not in captured.out
+    assert "High retention" not in captured.out
+    assert captured.out.index("First") < captured.out.index("Second")
+
+
+def test_cli_returns_error_for_unknown_report(capsys, tmp_path: Path) -> None:
+    csv_file = tmp_path / "metrics.csv"
+    csv_file.write_text(
+        "title,ctr,retention_rate,views,likes,avg_watch_time\n"
+        "First,25.0,22,254000,8900,2.5\n",
+        encoding="utf-8",
     )
 
-
-def test_cli_returns_error_for_unknown_report(capsys) -> None:
     exit_code = main(
         [
             "--files",
-            "tests/data/stats1.csv",
+            str(csv_file),
             "--report",
             "unknown",
         ]
