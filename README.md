@@ -70,3 +70,34 @@ report-cli --files tests/data/stats1.csv --report clickbait
 ```
 
 > Скриншот запуска также приложен в файле image.png в репозитории
+
+# Запуск тестов
+
+```
+tests/test_cli.py ...                                                                     [ 20%]
+tests/test_clickbait_report.py .                                                          [ 26%]
+tests/test_csv_reader.py ......                                                           [ 66%]
+tests/test_models.py .                                                                    [ 73%]
+tests/test_output.py .                                                                    [ 80%]
+tests/test_registry.py ...                                                                [100%]
+
+======================================== tests coverage =========================================
+________________________ coverage: platform linux, python 3.12.3-final-0 ________________________
+
+Name                                  Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------
+src/report_cli/__init__.py                1      0   100%
+src/report_cli/app.py                    10      0   100%
+src/report_cli/cli.py                    22      1    95%   43
+src/report_cli/csv_reader.py             24      0   100%
+src/report_cli/errors.py                 21      1    95%   36
+src/report_cli/models.py                 13      0   100%
+src/report_cli/output.py                  5      0   100%
+src/report_cli/reports/__init__.py        0      0   100%
+src/report_cli/reports/base.py            9      1    89%   13
+src/report_cli/reports/clickbait.py       8      0   100%
+src/report_cli/reports/registry.py       31      0   100%
+-------------------------------------------------------------------
+TOTAL                                   144      3    98%
+====================================== 15 passed in 0.26s =======================================
+```
