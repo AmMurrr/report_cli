@@ -10,6 +10,14 @@ class DataFileNotFoundError(AppError):
         super().__init__(f"Файл не найден: {file_path}")
 
 
+class InvalidCsvRowError(AppError):
+    def __init__(self, file_path: Path, line_number: int, reason: str) -> None:
+        super().__init__(
+            f"Некорректная строка CSV в файле {file_path}, строка {line_number}: "
+            f"{reason}"
+        )
+
+
 class DuplicateReportNameError(AppError):
     def __init__(self, report_name: str) -> None:
         super().__init__(f"Найдено несколько отчётов с именем '{report_name}'")
