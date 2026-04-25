@@ -84,8 +84,7 @@ def test_read_video_metrics_raises_for_read_error(
 def test_read_video_metrics_raises_for_missing_column(tmp_path: Path) -> None:
     csv_file = tmp_path / "missing_column.csv"
     csv_file.write_text(
-        "title,retention_rate,views,likes,avg_watch_time\n"
-        "First,35,45200,1240,4.2\n",
+        "title,retention_rate,views,likes,avg_watch_time\nFirst,35,45200,1240,4.2\n",
         encoding="utf-8",
     )
 
