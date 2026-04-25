@@ -10,6 +10,11 @@ class DataFileNotFoundError(AppError):
         super().__init__(f"Файл не найден: {file_path}")
 
 
+class DuplicateReportNameError(AppError):
+    def __init__(self, report_name: str) -> None:
+        super().__init__(f"Найдено несколько отчётов с именем '{report_name}'")
+
+
 class ReportNotFoundError(AppError):
     def __init__(self, report_name: str, available_reports: list[str]) -> None:
         if available_reports:

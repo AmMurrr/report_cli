@@ -4,7 +4,7 @@ from functools import lru_cache
 from importlib import import_module
 
 from report_cli import reports
-from report_cli.errors import ReportNotFoundError
+from report_cli.errors import DuplicateReportNameError, ReportNotFoundError
 from report_cli.reports.base import Report
 
 IGNORED_MODULES = {"base", "registry"}
@@ -24,6 +24,9 @@ def get_reports() -> dict[str, Report]:
                 continue
 
             report = value()
+            if report.name in discovered_reports:
+                raise DuplicateReportNameError(report.name)
+
             discovered_reports[report.name] = report
 
     return discovered_reports
