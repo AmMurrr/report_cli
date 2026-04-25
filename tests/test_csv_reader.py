@@ -3,7 +3,11 @@ from pathlib import Path
 import pytest
 
 from report_cli.csv_reader import read_video_metrics
-from report_cli.errors import DataFileNotFoundError, InvalidCsvRowError
+from report_cli.errors import (
+    DataFileNotFoundError,
+    DataFileReadError,
+    InvalidCsvRowError,
+)
 
 
 def test_read_video_metrics_combines_multiple_files(tmp_path: Path) -> None:
@@ -43,6 +47,38 @@ def test_read_video_metrics_raises_for_missing_file(tmp_path: Path) -> None:
 
     with pytest.raises(DataFileNotFoundError, match="Файл не найден"):
         read_video_metrics([missing_file])
+
+
+def test_read_video_metrics_raises_for_directory(tmp_path: Path) -> None:
+    csv_directory = tmp_path / "metrics.csv"
+    csv_directory.mkdir()
+
+    with pytest.raises(DataFileNotFoundError, match="Файл не найден"):
+        read_video_metrics([csv_directory])
+
+
+def test_read_video_metrics_raises_for_read_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    csv_file = tmp_path / "metrics.csv"
+    csv_file.write_text(
+        "title,ctr,retention_rate,views,likes,avg_watch_time\n"
+        "First,18.2,35,45200,1240,4.2\n",
+        encoding="utf-8",
+    )
+    original_open = Path.open
+
+    def raise_os_error(self: Path, *args: object, **kwargs: object) -> object:
+        if self == csv_file:
+            raise OSError("permission denied")
+
+        return original_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", raise_os_error)
+
+    with pytest.raises(DataFileReadError, match="Не удалось прочитать файл"):
+        read_video_metrics([csv_file])
 
 
 def test_read_video_metrics_raises_for_missing_column(tmp_path: Path) -> None:
